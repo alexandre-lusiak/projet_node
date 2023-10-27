@@ -91,9 +91,13 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(400);
             res.end('Index d\'étudiant invalide. Mais auriculaire OK');
         }
+    } else {
+        res.writeHead(404);
+        res.end('<h404>Aucune page existante sorry bg</h404>');
     }
 });
 
 server.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
+
