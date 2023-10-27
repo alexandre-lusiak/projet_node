@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des étudiants</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" type="text/css"></link>
+</head>
+<body>
+    <h1>
+        Liste des étudiants
+    </h1>
+
+    <a class="previous-btn" href="/">Retour</a>
+
+    <div class="list">
+        <table class="student-list" id="studentsTable">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date de naissance</th>
+                    <th>Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/solid.js" integrity="sha384-/BxOvRagtVDn9dJ+JGCtcofNXgQO/CCCVKdMfL115s3gOgQxWaX/tSq5V8dRgsbc" crossorigin="anonymous"></script>
+
+<script> 
+    document.addEventListener("DOMContentLoaded", (event) => {
+        fetchStudents()
+    });
+
+    const fetchStudents = () => {
+        fetch("/students/list", {
+            method: "GET",
+            ContentType: "application/json",
+        })
+        .then(response => response.json())
+        .then((data) => {
+            const students = data.students;
+            students.forEach((student, index)  => {
+                const tr = document.createElement("tr");
+                const tdName = document.createElement("td");
+                const tdBirth = document.createElement("td");
+                const tdAction = document.createElement("td");
+                tdName.innerHTML = student.name;
+                tdBirth.innerHTML = student.birth;
+                const deleteAction = document.createElement("a");
+                deleteAction.href = '/students/delete/'+index;
+                deleteAction.innerHTML = '🗑️ ❌'
+                deleteAction.addEventListener('click', (event) => {
+                    event.preventDefault()
+                    deleteStudent(index)
+                })
+                
+                tr.appendChild(tdName);
+                tr.appendChild(tdBirth);
+                tdAction.appendChild(deleteAction);
+                console.log(tdAction);
+                tr.appendChild(tdAction);
+                document.getElementById('studentsTable').querySelector('tbody').appendChild(tr)
+            })
+        })
+        .then(() => {
+            gsap.from(document.getElementById('studentsTable').querySelectorAll('tbody tr'),{ x: -2000, duration: 0.75, stagger : 0.11 } )
+        })
+    }
+
+    const deleteStudent = (index) => {
+            fetch(`/students/delete/${index}` , {
+                method:"DELETE",
+            }).then((res) => {
+                console.log(res)
+                document.getElementById('studentsTable').querySelector('tbody').deleteRow(index);
+
+            })
+            .catch((error) => {
+                console.error('Une erreur s\'est produite : ', error);
+            });
+    }
+</script>
+</html>

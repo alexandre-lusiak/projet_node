@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="../assets/css/style.css" type="text/css"></link>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+</head>
+<body>
+    <h1>
+        Ajouter un étudiant
+    </h1>
+    <div class="form-container">
+        <div class="form-error"></div>
+        <form class="form-content" id="createStudentForm">
+            <input type="text" placeholder="Nom de l'utilisateur..." required id="studentNameInput">
+            <input type="date" required id="studentBirthDateInput">
+            <button>Enregistrer</button>
+        </form>
+    </div>
+    <a href="/students" class="list-btn">Afficher la liste</a>
+    <script>
+        const submitStudentForm = () => {
+            const studentForm = document.getElementById('createStudentForm')
+            studentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData();
+                formData.append('name', document.getElementById('studentNameInput').value)
+                formData.append('birthdate', document.getElementById('studentBirthDateInput').value)
+                fetch('/student/create', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name :  document.getElementById('studentNameInput').value,
+                        birthdate : document.getElementById('studentBirthDateInput').value
+                    })
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                        document.querySelector('.form-error').innerHTML = '';
+                        data.error ? document.querySelector('.form-error').innerHTML = data.error : alert('Étudiant créé !')
+                })
+            })
+        }
+        document.addEventListener("DOMContentLoaded", (event) => {
+            submitStudentForm()
+        });
+    </script>
+</body>
+</html>
