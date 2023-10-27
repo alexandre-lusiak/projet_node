@@ -1,6 +1,8 @@
 body {
+    box-sizing: border-box;
+    height: 90vh;
     text-align: center;
-    background-color: #FCF5ED;
+    background-color: rgb(199, 185, 162);
 }
 
 /* Form design */
@@ -22,8 +24,7 @@ body {
 
 .form-content input,
 .form-content button,
-.list-btn,
-.previous-btn {
+.nav-link {
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
@@ -43,8 +44,7 @@ body {
     color: red;
 }
 
-.list-btn, 
-.previous-btn {
+.nav-link {
     cursor: pointer;
     text-decoration: none;
     color: black;
@@ -53,14 +53,12 @@ body {
     float: inline-start
 }
 
-.list-btn:hover,
-.previous-btn:hover {
-    /* background-color: rgb(128, 66, 86); */
+.nav-link:hover {
     background-color: #d47c86;
+    box-shadow: none;
 }
 
 /* List design */
-
 .list {
     display: flex;
     flex-direction: column;
@@ -98,7 +96,7 @@ body {
 }
 
 .student-list tr:nth-child(even) {
-    background-color: rgb(240, 228, 202);
+    background-color: #f5e9e0;
 }
 
 .student-list tr:nth-child(odd) {
@@ -106,5 +104,21 @@ body {
 }
 
 .student-list tr:hover {
-    background-color: rgb(228, 228, 223);
+    background-color: #ededed;
+}
+
+/* Navbar design*/
+.navbar ul{
+    list-style-type: none;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-decoration: none;
+}
+
+a{
+    text-decoration: none;
+    margin: 1rem;
+    color:black
 }

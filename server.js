@@ -2,20 +2,13 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv'
-import dayjs from 'dayjs'
 import {checkAgeform} from './utils/formValidator.js'
+import 'moment/locale/fr.js'
+import moment from "moment";
+import {students} from './const/students.js';
 dotenv.config()
 const { PORT  }= process.env
-
-console.log(PORT);
-
-const students = [
-    { name : "Sonia", birth : "2019-14-05"},
-    { name : "Antoine", birth : "2000-12-05"},
-    { name : "Alice", birth : "1990-14-09"},
-    { name : "Sophie", birth : "2001-10-02"},
-    { name : "Bernard", birth : "1980-21-08"}
-];
+moment.locale("fr")
 
 const server = http.createServer(async (req, res) => {
   // Définir le type de contenu de la réponse
@@ -42,7 +35,7 @@ const server = http.createServer(async (req, res) => {
       res.end(data);
     } catch (err) {
       res.writeHead(500);
-      res.end('Erreur interne du serveur');
+      res.end('Erreur interne du serveur à cause d\'Alexandre qui veut rajouter Zizou');
     }
   } else if(req.url === '/students'){
         try{
@@ -52,45 +45,51 @@ const server = http.createServer(async (req, res) => {
         res.end(data);
     } catch (err) {
         res.writeHead(500);
-        res.end('Erreur interne du serveur');
+        res.end("Erreur interne de Tibo la chèvre");
     }
     } else if(req.url === '/student/create'){
-        /* console.log(req.body) */
         const resData = {}
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
         req.on('end', () => {
-          const data = JSON.parse(Buffer.concat(chunks).toString());
-          if(checkAgeform(data).error){
-            resData.error = checkAgeform(data).message
-          }
-          const formattedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
-          data.name = formattedName
-          const student = {
-            name : data.name,
-            birth : data.birthdate
-          }
-          students.push(student)
-          console.log(students);
-          res.writeHead(200);
-          res.end(JSON.stringify(resData));
+        const data = JSON.parse(Buffer.concat(chunks).toString());
+        if(checkAgeform(data).error){
+        resData.error = checkAgeform(data).message
+            } else {
+            const formattedName = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+            data.name = formattedName
+            const student = {
+                name : data.name,
+                birth : moment(data.birthdate, 'YYYY-MM-DD').format('YYYY-DD-MM')
+            }
+            students.push(student)
         }
-        )
+        res.writeHead(200);
+        res.end(JSON.stringify(resData));
+        })
     } else if(req.url === '/students/list') {
+        const returnStudents = [];
+        students.forEach((student, index) => {
+            const studentNew = {
+                name : student.name,
+                birth : moment(student.birth, 'YYYY-DD-MM').format('DD-MM-YYYY'),
+            };
+            returnStudents.push(studentNew)
+        })
         res.writeHead(200)
-        res.end(JSON.stringify({students : students}))
+        res.end(JSON.stringify({students : returnStudents}))
 
     } else if (req.url.startsWith('/students/delete/')) {
         const parts = req.url.split('/');
         const index = parseInt(parts[parts.length - 1]);
-            console.log(index);    
+         
         if (!isNaN(index) && index >= 0 && index < students.length) {
             students.splice(index, 1); // Supprimez l'étudiant à l'index donné
             res.writeHead(200);
-            res.end('Étudiant supprimé avec succès.');
+            res.end('Étudiant supprimé avec succès. Assassin!');
         } else {
             res.writeHead(400);
-            res.end('Index d\'étudiant invalide.');
+            res.end('Index d\'étudiant invalide. Mais auriculaire OK');
         }
     }
 });

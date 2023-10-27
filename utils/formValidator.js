@@ -1,8 +1,12 @@
 import dayjs from 'dayjs';
+import 'dayjs/locale/fr.js';
+
+import moment from 'moment';
+moment.locale('fr')
 
 export const checkAgeform = (student) => {
-        const currentDate = dayjs();
-        const dateBirth=dayjs(student.birthdate);
+        const currentDate = moment();
+        const dateBirth = moment(student.birthdate);
         const diff = currentDate.diff(dateBirth,'year')
         const name = student.name
       
